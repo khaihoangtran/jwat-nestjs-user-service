@@ -17,20 +17,17 @@ export class UserService {
   ) {}
 
   // Encode User's password
-  private async encodePassword(password: string): Promise<string> {
+  public async encodePassword(password: string): Promise<string> {
     const salt: string = bcrypt.genSaltSync(10);
-
     return bcrypt.hashSync(password, salt);
   }
 
-
-  public async create({
-    fullName,
-    userName,
-    email,
-    password,
-  }: CreateUserDto): Promise<ResponseSingleUser> {
-    let user: User = await this.userRepository.findOne({ where: { email } });
+  public async create(
+    createUserDto: CreateUserDto,
+  ): Promise<ResponseSingleUser> {
+    let user: User = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
 
     if (user) {
       return {
@@ -39,14 +36,9 @@ export class UserService {
         data: null,
       };
     }
-    user = new User();
+    const password = await this.encodePassword(createUserDto.password);
 
-    user.fullName = fullName;
-    user.userName = userName;
-    user.email = email;
-    user.password = await this.encodePassword(password);
-
-    await this.userRepository.save(user);
+    user = await this.userRepository.save({ ...createUserDto, password });
 
     return { status: HttpStatus.CREATED, error: null, data: user };
   }
@@ -79,7 +71,13 @@ export class UserService {
         },
         take: limit,
       });
-      if (users.length === 0) throw new NotFoundException('Users not found');
+      if (users.length === 0) {
+        return {
+          status: HttpStatus.NOT_FOUND,
+          error: ['Users not found'],
+          data: null,
+        };
+      }
       return { status: HttpStatus.OK, error: null, data: users };
     } catch (error) {
       return {
@@ -115,7 +113,11 @@ export class UserService {
       where: { userId },
     });
     if (!user) {
-      throw new NotFoundException('User dose not exits!');
+      return {
+        status: HttpStatus.NOT_FOUND,
+        error: ['User dose not exits!'],
+        data: null,
+      };
     }
     if (updateUserDto.password) {
       const password = await this.encodePassword(updateUserDto.password);
@@ -155,5 +157,4 @@ export class UserService {
       };
     }
   }
-
 }

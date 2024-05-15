@@ -1,4 +1,4 @@
-import { IsOptional, IsInt } from 'class-validator';
+import { IsOptional, IsInt, IsUUID } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { FindByIdRequest, SearchRequest } from '@root/src/proto/user';
 
@@ -21,9 +21,10 @@ export class SearchUserDto implements SearchRequest {
   limit?: number;
 
   @IsOptional()
-  role: string;
+  role?: string;
 }
 
 export class FindByIdDto implements FindByIdRequest {
+  @IsUUID()
   userId: string;
 }

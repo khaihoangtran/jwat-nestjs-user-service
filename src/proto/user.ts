@@ -5,11 +5,11 @@
 // source: src/proto/user.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { wrappers } from "protobufjs";
-import { Observable } from "rxjs";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { wrappers } from 'protobufjs';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "user";
+export const protobufPackage = 'user';
 
 export enum userRole {
   ADMIN = 0,
@@ -76,11 +76,14 @@ export interface User {
   updatedAt: Date | undefined;
 }
 
-export const USER_PACKAGE_NAME = "user";
+export const USER_PACKAGE_NAME = 'user';
 
-wrappers[".google.protobuf.Timestamp"] = {
+wrappers['.google.protobuf.Timestamp'] = {
   fromObject(value: Date) {
-    return { seconds: value.getTime() / 1000, nanos: (value.getTime() % 1000) * 1e6 };
+    return {
+      seconds: value.getTime() / 1000,
+      nanos: (value.getTime() % 1000) * 1e6,
+    };
   },
   toObject(message: { seconds: number; nanos: number }) {
     return new Date(message.seconds * 1000 + message.nanos / 1e6);
@@ -100,34 +103,75 @@ export interface UserServiceClient {
 }
 
 export interface UserServiceController {
-  create(request: CreateRequest): Promise<ResponseSingleUser> | Observable<ResponseSingleUser> | ResponseSingleUser;
+  create(
+    request: CreateRequest,
+  ):
+    | Promise<ResponseSingleUser>
+    | Observable<ResponseSingleUser>
+    | ResponseSingleUser;
 
   findAll(
     request: SearchRequest,
-  ): Promise<ResponseMultipleUser> | Observable<ResponseMultipleUser> | ResponseMultipleUser;
+  ):
+    | Promise<ResponseMultipleUser>
+    | Observable<ResponseMultipleUser>
+    | ResponseMultipleUser;
 
   findOneById(
     request: FindByIdRequest,
-  ): Promise<ResponseSingleUser> | Observable<ResponseSingleUser> | ResponseSingleUser;
+  ):
+    | Promise<ResponseSingleUser>
+    | Observable<ResponseSingleUser>
+    | ResponseSingleUser;
 
-  update(request: UpdateRequest): Promise<ResponseSingleUser> | Observable<ResponseSingleUser> | ResponseSingleUser;
+  update(
+    request: UpdateRequest,
+  ):
+    | Promise<ResponseSingleUser>
+    | Observable<ResponseSingleUser>
+    | ResponseSingleUser;
 
-  delete(request: FindByIdRequest): Promise<ResponseSingleUser> | Observable<ResponseSingleUser> | ResponseSingleUser;
+  delete(
+    request: FindByIdRequest,
+  ):
+    | Promise<ResponseSingleUser>
+    | Observable<ResponseSingleUser>
+    | ResponseSingleUser;
 }
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["create", "findAll", "findOneById", "update", "delete"];
+    const grpcMethods: string[] = [
+      'create',
+      'findAll',
+      'findOneById',
+      'update',
+      'delete',
+    ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("UserService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('UserService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("UserService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('UserService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const USER_SERVICE_NAME = "UserService";
+export const USER_SERVICE_NAME = 'UserService';

@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, MaxLength, MinLength } from 'class-validator';
 
 import { Transform } from 'class-transformer';
 import { CreateRequest } from '@root/src/proto/user';

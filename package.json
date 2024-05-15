@@ -31,11 +31,16 @@
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "module-alias": "^2.2.3",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "ts-proto": "^1.174.0",
     "typeorm": "^0.3.20"
+  },
+  "__moduleAliases": {
+    "@root": ".",
+    "@users": "./src/users/"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -66,7 +71,11 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": "./",
+    "moduleNameMapper": {
+      "@root/(.*)": "<rootDir>/$1",
+      "@users/(.*)": "<rootDir>/src/users/$1"
+    },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -74,7 +83,19 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "<rootDir>/coverage",
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "node_modules",
+      "dist",
+      "google",
+      "coverage",
+      ".module.ts",
+      ".eslintrc.js",
+      "<rootDir>/src/user/dtos",
+      "<rootDir>/src/main.ts",
+      "<rootDir>/src/user/filter",
+      "test"
+    ]
   }
 }
